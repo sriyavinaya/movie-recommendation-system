@@ -1,0 +1,162 @@
+.main {
+	min-height: 100vh;
+	flex-direction: column;
+	display: flex;
+	align-items: center;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+.movie-box {
+	width: 10vw;
+	height: 20vh;
+	background-color: grey;
+}
+
+:root {
+	--header-color: #3d8498;
+	--body-color: #effcff;
+	--search-color: rgb(61, 132, 152);
+	--text-color:black ;
+}
+
+.dark_theme {
+	--header-color: rgb(29, 29, 29);
+	--body-color: rgb(50, 47, 47);
+	--search-color: rgb(160, 11, 11);
+	--text-color:white ;
+}
+
+.buttonDiv {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 10px;
+}
+
+.btn.btn-secondary.btn-lg {
+	background-color: var(--search-color);
+	border: none;
+	border-radius: 0;
+}
+/*css for nav bar*/
+
+.btn.btn-outline-success {
+	color: black;
+}
+
+.navbar-color-field {
+	background-color: var(--header-color);
+}
+
+.container-fluid {
+	background-color: var(--header-color);
+	height: 8vh;
+}
+
+body {
+	background-color: var(--body-color);
+	border: none;
+}
+
+.navbar.navbar-expand-lg {
+	padding: 0;
+}
+
+.container-fluid {
+	background-color: green !important;
+}
+
+.navbar-toggler {
+	border: none;
+}
+
+.navbar-toggler-icon {
+	background-color: white; /* Set the background color for the toggler icon */
+}
+
+.navbar-toggler:focus {
+	outline: none;
+}
+
+.navbar-nav .nav-link {
+	color: white;
+	font-size: 18px;
+	margin-left: 2px;
+	margin-right: 2px;
+}
+
+.navbar-brand {
+	color: white;
+	font-size: 18px;
+	height: 100%; /* Make the navbar-brand container take full height */
+	display: flex;
+	align-items: center; /* Center the content vertically */
+}
+
+.navbar-nav .nav-link.active {
+	color: white;
+	font-size: 18px;
+}
+
+.d-flex .btn.btn-outline-success {
+	background-color: var(--search-color);
+	color: white;
+	font-size: 18px;
+	border: none;
+	border-radius: 0;
+}
+
+.d-flex .form-control.me-2 {
+	border-radius: 0;
+}
+
+.navbar-nav li {
+	border-right: 2px solid #ccc;
+	padding-right: 10px;
+}
+
+.navbar-nav li:last-child {
+	border-right: none;
+}
+
+.streaming-logo {
+	width: 20px;
+	height: auto;
+	margin-right: 5px;
+}
+.navbar-nav {
+	z-index: 1000;
+}
+
+.hero-img {
+	width: 60vw;
+}
+
+.info-paragraph {
+	text-align: justify;
+	margin-top: 20px;
+	padding: 15px;
+	width: 50vw;
+	background-color: var(--header-color);
+}
+
+p{
+	color: white ;
+}
+@media (max-width: 1000px) {
+	.hero-img {
+		width: 90vw;
+	}
+}
+
+.tempclass {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+

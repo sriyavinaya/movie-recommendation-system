@@ -1,0 +1,81 @@
+.keyword-container {
+	margin-top: 20px; /* Adjust the margin as needed */
+	width: 85%;
+	margin: auto;
+}
+
+.keywords {
+	padding: 10px;
+	text-align: center;
+}
+
+.keyword-list {
+	list-style: none;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.keyword-list li {
+	margin: 0 10px; /* Adjust the spacing between keywords */
+}
+
+.poster-details-container {
+	display: grid;
+	grid-template-columns: 40% 60%; /* 60-40 split */
+	width: 85%; /* Takes up 80% of the screen width */
+	margin: 0 auto; /* Center the container */
+	gap: 20px; /* Adjust the gap as needed */
+}
+
+.poster-ratings {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-top: 20px;
+}
+
+.img-fluid {
+	max-width: 100%;
+	height: auto;
+	margin-bottom: 10px;
+}
+
+.rating-container {
+	margin-top: 10px;
+	text-align: center;
+}
+
+.rating-container button {
+	border-radius: 50%;
+	margin-right: 5px;
+}
+
+.rounded-border {
+	border: 1px solid var(--text-color);
+	border-radius: 8px; /* Adjust the radius as needed */
+	padding: 10px; /* Optional: Add padding to the container */
+}
+
+.review_container {
+	width: 85%;
+	margin: auto;
+}
+
+/* text color change */
+
+.movie-information h2,
+.movie-information p , .btn-primary , .card-title,
+.card-text , .keywords h3, .keywords p , 
+.keyword-list li , .footer-text{
+	color: var(--text-color);
+}
+
+.review_container , .review_container h3 , .review_container p{
+    color: var(--text-color);
+}
+
+.card-body{
+	background-color: var(--body-color);
+}

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<title>Movie Match</title>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+			crossorigin="anonymous"
+		/>
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+			crossorigin="anonymous"
+		></script>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+		/>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
+			rel="stylesheet"
+		/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="cssfiles/test.css" />
+		<link
+			rel="stylesheet"
+			href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"
+		/>
+		<link rel="stylesheet" href="../css/result_index.css" />
+		<link rel="stylesheet" href="../css/results_content.css" />
+		<link rel="stylesheet" href="/css/font.css" />
+		<link rel="stylesheet" href="../css/movie_info.css" />
+		<link rel="icon" href="/images/logo_navbar.png" type="image/png" />
+	</head>
+
+	<body>
+		<header class="p-3 navbar-color-field">
+			<div class="container" bis_skin_checked="1">
+				<div
+					class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"
+					bis_skin_checked="1"
+				>
+					<a
+						href="/"
+						class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none"
+					>
+						<img
+							src="/images/logo_navbar.png"
+							alt="IMDb Logo"
+							width="35"
+							height="30"
+						/>
+					</a>
+	
+					<ul
+						class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
+					>
+					<li>
+						<a href="/recommendations" class="nav-link px-2 text-white"
+							>Recommendations</a
+						>
+						</li>
+						<li>
+							<a href="/advanced-search" class="nav-link px-2 text-white"
+								>Advanced-search</a
+							>
+						</li>
+						<li>
+							<a href="/genres" class="nav-link px-2 text-white">Genre</a>
+						</li>
+						<li>
+							<a href="/streaming-service" class="nav-link px-2 text-white"
+								>Streaming Service</a
+							>
+						</li>
+					</ul>
+	
+					<form
+						class="d-flex col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3"
+						role="search"
+					>
+						<input
+							id="searchInput"
+							type="search"
+							class="form-control me-2"
+							placeholder="Search..."
+							aria-label="Search"
+						/>
+						<button id = "searchButton" type="submit" class="btn btn-outline-light">Search</button>
+					</form>
+	
+					<div class="text-end" bis_skin_checked="1">
+						<img id="theme" src="/images/dark-light-icon.png" alt="">
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<div class="main">
+			<div class="movie-details">
+				<div class="poster-details-container rounded-border mt-4">
+					<div class="poster-ratings">
+						<img
+							src="<%= movieDetails.Poster %>"
+							alt="<%= movieDetails.PosterAlt %>"
+						/>
+
+						<div
+							class="rating-buttons d-flex flex-column justify-content-center my-2 mx-3"
+						>
+							<a href="https://www.imdb.com/title/<%= movieDetails.tconst %>/"
+								><button type="button" class="btn btn-warning mt-1">
+									<img
+										src="/images/imdb-icon.png"
+										alt="IMDb Logo"
+										width="30"
+										height="30"
+									/>
+									IMDb Rating: <%= movieDetails.IMDBRating %>
+								</button></a
+							>
+
+							<button type="button" class="btn btn-danger mt-1">
+								<img
+									src="/images/rt-icon.png"
+									alt="Rotten Tomatoes Logo"
+									width="30"
+									height="30"
+								/>
+								RT Rating: <%= movieDetails.RottenTomatoesRating %>
+							</button>
+						</div>
+					</div>
+
+					<div class="movie-information mt-3 px-2">
+						<h2><%= movieDetails.Title %></h2>
+						<p><%= movieDetails.Plot %></p>
+						<p>Directed by: <%= movieDetails.Director %></p>
+						<p>Written by: <%= movieDetails.Writer %></p>
+						<p>Starring: <%= movieDetails.Actors %></p>
+						<p>Released: <%= movieDetails.Released %></p>
+						<p>Runtime: <%= movieDetails.Runtime %></p>
+						<p>Genre: <%= movieDetails.Genre %></p>
+						<p>Language: <%= movieDetails.Language %></p>
+						<p>Rated: <%= movieDetails.Rated %></p>
+						<p>Country: <%= movieDetails.Country %></p>
+
+						<% if (movieDetails.StreamingService &&
+						movieDetails.StreamingService.length > 0) { %>
+						<button type="button" class="btn btn-info mt-1">
+							<img
+								src="<%= movieDetails.StreamingService[0].LogoPath %>"
+								alt="<%= movieDetails.StreamingService[0].StreamingService %> Logo"
+								width="30"
+								height="30"
+							/>
+							Streaming on: <%=
+							movieDetails.StreamingService[0].StreamingService %>
+						</button>
+						<% } else { %>
+						<p>No streaming service</p>
+						<% } %>
+					</div>
+				</div>
+
+				<div class="review_container rounded-border mt-2">
+					<h3>Reviews:</h3>
+
+					<% let reviews = movieDetails.Reviews; if(reviews.length > 0) { %>
+					<div
+						id="reviewCarousel"
+						class="carousel slide"
+						data-bs-ride="carousel"
+					>
+						<div class="carousel-inner">
+							<% reviews.forEach((review, index) => { let content =
+							review.content; if(content.length > 800) { content =
+							content.substring(0, 800) + '...'; } %>
+
+							<div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+								<div class="card">
+									<div class="card-body">
+										<h5 class="card-title"><%= review.author %></h5>
+										<p class="card-text"><%= content %></p>
+										<div class="text-center">
+											<a href="<%= review.url %>" class="btn btn-primary"
+												>Read Full Review</a
+											>
+										</div>
+									</div>
+								</div>
+							</div>
+							<% }); %>
+						</div>
+
+						<% if(reviews.length > 1) { %>
+						<div class="carousel-buttons d-flex justify-content-center py-3">
+							<button
+								class="btn btn-secondary"
+								type="button"
+								data-bs-target="#reviewCarousel"
+								data-bs-slide="prev"
+							>
+								<span class="carousel-button-icon" aria-hidden="true"
+									>&lt;</span
+								>
+							</button>
+							<div class="px-2"></div>
+							<button
+								class="btn btn-secondary"
+								type="button"
+								data-bs-target="#reviewCarousel"
+								data-bs-slide="next"
+							>
+								<span class="carousel-button-icon" aria-hidden="true"
+									>&gt;</span
+								>
+							</button>
+						</div>
+						<% } %>
+					</div>
+					<% } else { %>
+					<p>No reviews available.</p>
+					<% } %>
+				</div>
+
+				<div class="keyword-container mt-2">
+					<div class="keywords rounded-border">
+						<h3>Keywords:</h3>
+						<ul class="keyword-list">
+							<% movieDetails.Keywords.forEach(keyword => { %>
+							<li><%= keyword %></li>
+							<% }); %>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="pt-3 mt-4">
+			<div class="container" bis_skin_checked="1">
+				<footer
+					class="d-flex flex-wrap justify-content-between align-items-center py-3 mt-4 border-top "
+				>
+					<div class="col-md-4 d-flex align-items-center" bis_skin_checked="1">
+						<a
+							href="/"
+							class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1"
+						>
+							<svg class="bi" width="30" height="24">
+								<use xlink:href="#bootstrap"></use>
+							</svg>
+						</a>
+						<span class="mb-3 mb-md-0 text-body-secondary"></span>
+							2024 Movie-Match</span
+						>
+					</div>
+
+					<ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+						<li class="ms-3">
+							<a
+								class="text-body-secondary"
+								href="https://github.com/arunnats/movie-match"
+								target="_blank"
+							>
+								<svg class="bi" width="24" height="24">
+									<use xlink:href="#github"></use>
+								</svg>
+							</a>
+						</li>
+					</ul>
+				</footer>
+			</div>
+		</div>
+		
+		<script>
+			document.getElementById("theme").addEventListener("click", () => {
+				document.body.classList.toggle("dark_theme");
+			});
+
+			document
+				.querySelector(".btn.btn-outline-light")
+				.addEventListener("click", async function () {
+					const searchQuery = document.getElementById("searchInput").value;
+
+					// If the search bar is empty, do nothing
+					if (!searchQuery.trim()) {
+						return;
+					}
+
+					try {
+						const response = await fetch("/search", {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({ query: searchQuery }),
+						});
+
+						const { searchId } = await response.json();
+
+						window.location.href = `/results?searchId=${searchId}`;
+					} catch (error) {
+						console.error("Error:", error);
+					}
+				});
+		</script>
+	</body>
+</html>

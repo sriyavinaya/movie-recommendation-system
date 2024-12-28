@@ -1,0 +1,22 @@
+{
+  "name": "movie-match",
+  "version": "1.0.0",
+  "description": "A web app that gives streaming info about movies",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "arunnats, Hafeez-hm",
+  "license": "ISC",
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "crypto": "^1.0.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-session": "^1.18.0",
+    "fuse.js": "^7.0.0",
+    "mongodb": "^6.3.0",
+    "nodemon": "^3.0.3",
+    "openai": "^4.27.0"
+  }
+}

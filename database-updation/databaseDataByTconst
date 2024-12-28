@@ -1,0 +1,57 @@
+from pymongo import MongoClient
+import json
+import sys
+
+def get_movie_data_by_tconst(collection_name, tconst):
+    # Load MongoDB configuration from a JSON file
+    with open('dbConfig.json') as config_file:
+        config = json.load(config_file)
+                
+    mongo_connection_string = config.get('mongo_connection_string', '')
+    mongo_database_name = config.get('mongo_database_name', '')
+
+    # Connect to MongoDB
+    client = MongoClient(mongo_connection_string)
+    database = client[mongo_database_name]
+
+    try:
+        # Access the specified collection
+        collection = database[collection_name]
+
+        # Query for documents with the given 'tconst' value
+        query = {'tconst': tconst}
+        result = collection.find(query)
+
+        # Convert the cursor to a list of documents
+        movie_data_list = list(result)
+
+        if movie_data_list:
+            return movie_data_list
+        else:
+            print(f"No documents found with 'tconst': {tconst}")
+            return None
+
+    except Exception as e:
+        print(f"Error retrieving movie data: {e}")
+        return None
+
+    finally:
+        # Close the MongoDB connection
+        client.close()
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python databytconst.py <tconst>")
+        sys.exit(1)
+
+    tconst_to_query = sys.argv[1]
+
+    # Example usage:
+    movie_data = get_movie_data_by_tconst("movies", tconst_to_query)  # Replace "movies" with your actual collection name
+
+    if movie_data:
+        print(f"Movie data for 'tconst' {tconst_to_query}:\n")
+        for document in movie_data:
+            print(document)
+    else:
+        print("Failed to retrieve movie data.")

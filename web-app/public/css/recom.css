@@ -1,0 +1,155 @@
+/*theme*/
+:root {
+	--header-color: #3d8498;
+	--body-color: #effcff;
+	--search-color: rgb(32, 93, 110);
+}
+
+.dark_theme {
+	--header-color: rgb(67, 66, 66);
+	--body-color: rgb(39, 38, 38);
+	--search-color: rgb(131, 11, 11);
+}
+
+/*main*/
+
+body {
+	background-color: var(--body-color);
+}
+
+.main {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 30px;
+}
+
+.formdiv {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#recommendationForm {
+	display: flex;
+	flex-direction: column;
+	width: 40vw;
+	padding: 5vh 3vw 5vh;
+	border: 2px solid rgba(149, 120, 120, 0.5);
+	border-radius: 20px;
+	background-color: white;
+	justify-content: center;
+	align-items: center;
+}
+
+.movieName1,
+.movieName2,
+.movieName3,
+.movieName4,
+.keywords1,
+.keywords2 {
+	margin-bottom: 10px;
+}
+
+#movieName1,
+#movieName2,
+#movieName3,
+#movieName4,
+#keywords1,
+#keywords2 {
+	border: 2px solid rgba(149, 120, 120, 0.5);
+	border-radius: 5px;
+	margin-bottom: 1vh;
+	height: 5vh;
+	max-width: 30vw;
+}
+
+.btn.btn-secondary.btn-lg {
+	margin-top: 5vh;
+}
+
+/* nav bar css */
+
+#theme {
+	width: 5vw;
+	height: 5vh;
+	cursor: pointer;
+}
+
+.navbar-nav img {
+	width: 40px;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.navbar.navbar-expand-lg.bg-body-tertiary {
+	padding: 0;
+}
+
+.container-fluid {
+	background-color: var(--header-color);
+	height: 8vh;
+}
+
+body {
+	background-color: var(--body-color);
+}
+
+.navbar-nav .nav-link {
+	color: white;
+	font-size: 18px;
+}
+
+.navbar-brand {
+	color: white;
+	font-size: 18px;
+}
+
+.navbar-nav .nav-link.active {
+	color: white;
+	font-size: 18px;
+}
+
+.d-flex .btn.btn-outline-success {
+	background-color: var(--search-color);
+	color: white;
+	font-size: 18px;
+	border: none;
+	border-radius: 0;
+}
+
+.d-flex .form-control.me-2 {
+	border-radius: 0;
+}
+
+.navbar-nav li {
+	border-right: 2px solid #ccc;
+	padding-right: 10px;
+}
+
+.navbar-nav li:last-child {
+	border-right: none;
+}
+
+.navbar-color-field {
+	background-color: var(--header-color);
+}
+
+.btn.btn-outline-light {
+	background-color: var(--search-color);
+	border: none;
+	border-radius: 0;
+}
+.info-paragraph {
+	text-align: justify;
+	margin-top: 20px;
+	padding: 15px;
+	background-color: var(--header-color);
+	color: white;
+}
+
+@media only screen and (max-width: 767px) {
+	#recommendationForm {
+		width: 90vw;
+	}
+}

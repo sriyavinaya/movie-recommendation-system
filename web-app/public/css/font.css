@@ -1,0 +1,47 @@
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "Poppins", sans-serif;
+}
+
+.tempclass {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+#theme {
+	width: 25px;
+	height: 25px;
+	padding-right: 20p;
+}
+
+#theme:hover {
+	cursor: pointer;
+}
+
+:root {
+	--header-color: #3d8498;
+	--body-color: #effcff;
+	--search-color: rgb(32, 93, 110);
+	--text-color: black;
+}
+
+.light_theme {
+	--header-color: rgb(67, 66, 66);
+	--body-color: rgb(39, 38, 38);
+	--search-color: rgb(131, 11, 11);
+	--text-color: white;
+}
+
+.dark_theme {
+	--header-color: rgb(67, 66, 66);
+	--body-color: rgb(39, 38, 38);
+	--search-color: rgb(131, 11, 11);
+	--text-color: white;
+}

@@ -1,0 +1,367 @@
+#theme {
+	width: 5vw;
+	height: 5vh;
+	cursor: pointer;
+}
+
+:root {
+	--header-color: #3d8498;
+	--body-color: #effcff;
+	--search-color: rgb(32, 93, 110);
+	--text-color: black;
+}
+
+.light_theme {
+	--header-color: rgb(67, 66, 66);
+	--body-color: rgb(39, 38, 38);
+	--search-color: rgb(131, 11, 11);
+	--text-color: white;
+}
+
+.dark_theme {
+	--header-color: rgb(67, 66, 66);
+	--body-color: rgb(39, 38, 38);
+	--search-color: rgb(131, 11, 11);
+	--text-color: white;
+}
+/*css for nav bar*/
+
+.btn.btn-outline-success {
+	color: black;
+}
+
+.navbar.navbar-expand-lg.bg-body-tertiary {
+	padding: 0;
+}
+
+#theme {
+	width: 5vw;
+	height: 5vh;
+	cursor: pointer;
+}
+
+.container-fluid {
+	background-color: var(--header-color);
+	height: 8vh;
+}
+
+body {
+	background-color: var(--body-color);
+}
+
+.navbar-nav .nav-link {
+	color: white;
+	font-size: 18px;
+}
+
+.navbar-brand {
+	color: white;
+	font-size: 18px;
+}
+
+.navbar-nav .nav-link.active {
+	color: white;
+	font-size: 18px;
+}
+
+.d-flex .btn.btn-outline-success {
+	background-color: var(--search-color);
+	color: white;
+	font-size: 18px;
+	border: none;
+	border-radius: 0;
+}
+
+.d-flex .form-control.me-2 {
+	border-radius: 0;
+}
+
+.btn.btn-outline-light ,.btn.btn-primary.btn-lg {
+	background-color: var(--search-color);
+	border: none ;
+	border-radius: 0 ;
+}
+.streaming-logo {
+	width: 20px;
+	height: auto;
+	margin-right: 5px;
+}
+.main {
+	display: flex;
+	flex-direction: row;
+	margin-left: 0;
+	margin-right: 0;
+	margin-top: 20px;
+	justify-content: center;
+	flex-wrap: wrap; /* Added flex-wrap property */
+}
+
+.buttonDiv {
+	display: flex;
+	justify-content: center;
+	margin: auto;
+}
+.navbar-color-field {
+	background-color: var(--header-color);
+}
+
+.info-paragraph {
+	text-align: justify;
+	margin: auto;
+	margin-top: 20px;
+	padding: 10px;
+	width: 50vw;
+	background-color: var(--header-color);
+	border-radius: 10px;
+	color: white ;
+}
+
+.rounded-border {
+	max-width: 80%;
+	margin: auto;
+	border: 1px solid var(--text-color);
+	border-radius: 8px; /* Adjust the radius as needed */
+	padding: 10px; /* Optional: Add padding to the container */
+}
+
+/* creating drop dowm */
+.container-dd {
+	position: relative;
+	flex: 0 0 200px; /* Added flex property */
+	min-width: 200px; /* Added min-width property */
+	max-width: 200px;
+	width: 100%;
+	padding: 5px;
+	margin: 5px;
+}
+
+.select-btn,
+.select-btn2 {
+	display: flex;
+	height: 50px;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 16px;
+	border-radius: 8px;
+	cursor: pointer;
+	background-color: #fff;
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.select-btn .btn-text,
+.select-btn2 .btn-text2 {
+	font-size: 17px;
+	font-weight: 400;
+	color: #333;
+}
+
+.select-btn .arrow-dwn,
+.select-btn2 .arrow-dwn2 {
+	display: flex;
+	height: 21px;
+	width: 21px;
+	color: #fff;
+	font-size: 14px;
+	border-radius: 50%;
+	background: #6e93f7;
+	align-items: center;
+	justify-content: center;
+	transition: 0.3s;
+}
+
+.select-btn.open .arrow-dwn,
+.select-btn2.open .arrow-dwn2 {
+	transform: rotate(-180deg);
+}
+
+.list-items,
+.list-items2 {
+	position: relative;
+	margin-top: 15px;
+	border-radius: 8px;
+	padding: 16px;
+	background-color: #fff;
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+	display: none;
+}
+
+.select-btn.open ~ .list-items,
+.select-btn2.open ~ .list-items2 {
+	display: block;
+}
+
+.list-items .item,
+.list-items2 .item2 {
+	display: flex;
+	align-items: center;
+	list-style: none;
+	height: 50px;
+	cursor: pointer;
+	transition: 0.3s;
+	padding: 0 15px;
+	border-radius: 8px;
+}
+
+.list-items .item:hover,
+.list-items2 .item2:hover {
+	background-color: #e7edfe;
+}
+
+.item .item-text,
+.item2 .item-text2 {
+	font-size: 16px;
+	font-weight: 400;
+	color: #333;
+}
+
+.item .checkbox,
+.item2 .checkbox2 {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 16px;
+	width: 16px;
+	border-radius: 4px;
+	margin-right: 12px;
+	border: 1.5px solid #c0c0c0;
+	transition: all 0.3s ease-in-out;
+}
+
+.item.checked .checkbox,
+.item2.checked2 .checkbox2 {
+	background-color: #4070f4;
+	border-color: #4070f4;
+}
+
+.checkbox .check-icon,
+.checkbox2 .check-icon2 {
+	color: #fff;
+	font-size: 11px;
+	transform: scale(0);
+	transition: all 0.2s ease-in-out;
+}
+
+.item.checked .check-icon,
+.item2.checked2 .check-icon2 {
+	transform: scale(1);
+}
+
+/* third and fourth */
+
+.select-btn3,
+.select-btn4 {
+	display: flex;
+	height: 50px;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 16px;
+	border-radius: 8px;
+	cursor: pointer;
+	background-color: #fff;
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.select-btn3 .btn-text3,
+.select-btn4 .btn-text4 {
+	font-size: 17px;
+	font-weight: 400;
+	color: #333;
+}
+
+.select-btn3 .arrow-dwn3,
+.select-btn4 .arrow-dwn4 {
+	display: flex;
+	height: 21px;
+	width: 21px;
+	color: #fff;
+	font-size: 14px;
+	border-radius: 50%;
+	background: #6e93f7;
+	align-items: center;
+	justify-content: center;
+	transition: 0.3s;
+}
+
+.select-btn3.open .arrow-dwn3,
+.select-btn4.open .arrow-dwn4 {
+	transform: rotate(-180deg);
+}
+
+.list-items3,
+.list-items4 {
+	position: relative;
+	margin-top: 15px;
+	border-radius: 8px;
+	padding: 16px;
+	background-color: #fff;
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+	display: none;
+}
+
+.select-btn3.open ~ .list-items3,
+.select-btn4.open ~ .list-items4 {
+	display: block;
+}
+
+.list-items3 .item3,
+.list-items4 .item4 {
+	display: flex;
+	align-items: center;
+	list-style: none;
+	height: 50px;
+	cursor: pointer;
+	transition: 0.3s;
+	padding: 0 15px;
+	border-radius: 8px;
+}
+
+.list-items3 .item3:hover,
+.list-items4 .item4:hover {
+	background-color: #e7edfe;
+}
+
+.item3 .item-text3,
+.item4 .item-text4 {
+	font-size: 16px;
+	font-weight: 400;
+	color: #333;
+}
+
+.item3 .checkbox3,
+.item4 .checkbox4 {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 16px;
+	width: 16px;
+	border-radius: 4px;
+	margin-right: 12px;
+	border: 1.5px solid #c0c0c0;
+	transition: all 0.3s ease-in-out;
+}
+
+.item3.checked3 .checkbox3,
+.item4.checked4 .checkbox4 {
+	background-color: #4070f4;
+	border-color: #4070f4;
+}
+
+.checkbox4 .check-icon4,
+.checkbox3 .check-icon3 {
+	color: #fff;
+	font-size: 11px;
+	transform: scale(0);
+	transition: all 0.2s ease-in-out;
+}
+
+.item3.checked3 .check-icon3,
+.item4.checked4 .check-icon4 {
+	transform: scale(1);
+}
+
+.tempclass {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}

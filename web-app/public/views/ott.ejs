@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<title>Movie Match</title>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+			crossorigin="anonymous"
+		/>
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+			crossorigin="anonymous"
+		></script>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+		/>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
+			rel="stylesheet"
+		/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="cssfiles/test.css" />
+		<link
+			rel="stylesheet"
+			href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"
+		/>
+		<link rel="stylesheet" href="../css/result_searchbar.css" />
+		<link rel="stylesheet" href="../css/result_index.css" />
+		<link rel="stylesheet" href="../css/results_content.css" />
+		<link rel="stylesheet" href="../css/result_filter_bar.css" />
+		<link rel="stylesheet" href="/css/font.css" />
+		<link rel="icon" href="/images/logo_navbar.png" type="image/png" />
+	</head>
+	<body>
+		<div class="header">
+			<!-- theme change button-->
+			<div class=".theme_hold">
+				<svg id="theme" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+					<title>weather-night</title>
+					<path
+						d="M17.75,4.09L15.22,6.03L16.13,9.09L13.5,7.28L10.87,9.09L11.78,6.03L9.25,4.09L12.44,4L13.5,1L14.56,4L17.75,4.09M21.25,11L19.61,12.25L20.2,14.23L18.5,13.06L16.8,14.23L17.39,12.25L15.75,11L17.81,10.95L18.5,9L19.19,10.95L21.25,11M18.97,15.95C19.8,15.87 20.69,17.05 20.16,17.8C19.84,18.25 19.5,18.67 19.08,19.07C15.17,23 8.84,23 4.94,19.07C1.03,15.17 1.03,8.83 4.94,4.93C5.34,4.53 5.76,4.17 6.21,3.85C6.96,3.32 8.14,4.21 8.06,5.04C7.79,7.9 8.75,10.87 10.95,13.06C13.14,15.26 16.1,16.22 18.97,15.95M17.33,17.97C14.5,17.81 11.7,16.64 9.53,14.5C7.36,12.31 6.2,9.5 6.04,6.68C3.23,9.82 3.34,14.64 6.35,17.66C9.37,20.67 14.19,20.78 17.33,17.97Z"
+					/>
+				</svg>
+			</div>
+
+			<div class="search">
+				<div class="icon"><i class="fa fa-search"></i></div>
+				<input
+					type="text"
+					placeholder="Search.."
+					class="bar"
+					id="searchInput"
+				/>
+				<div id="searchResults"></div>
+				<button id="searchButton">Search</button>
+			</div>
+		</div>
+
+		<div class="main">
+			<div class="content-container">
+				<h1>OTT Results</h1>
+				<div class="movie-cards-container">
+					<% ottResults.forEach(movie => { %>
+					<div class="movie-cards">
+						<img
+							src="<%= (movie.poster && movie.poster !== 'N/A') ? movie.poster : movie.posteralt || '/path/to/default-image.jpg' %>"
+							alt="Image"
+						/>
+						<div class="card-content">
+							<h6><%= movie.title %></h6>
+							<h6><%= movie.year %></h6>
+							<h6><%= movie.language %></h6>
+							<h6><%= movie.genre %></h6>
+							<div class="streaming-div">
+								<% if (movie.streaming && movie.streaming !== 'None Found') { %>
+								<img
+									style="width: 20px; height: auto; margin-right: 5px"
+									src="<%= movie.streamingLogo %>"
+									alt="Logo"
+								/>
+								<h6><%= movie.streaming %></h6>
+								<% } %>
+							</div>
+							<a href="/view-info/<%= movie.tconst %>"
+								><button>See More</button></a
+							>
+						</div>
+					</div>
+					<% }); %>
+				</div>
+			</div>
+		</div>
+
+		<div class="pt-3 mt-4">
+			<div class="container" bis_skin_checked="1">
+				<footer
+					class="d-flex flex-wrap justify-content-between align-items-center py-3 mt-4 border-top "
+				>
+					<div class="col-md-4 d-flex align-items-center" bis_skin_checked="1">
+						<a
+							href="/"
+							class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1"
+						>
+							<svg class="bi" width="30" height="24">
+								<use xlink:href="#bootstrap"></use>
+							</svg>
+						</a>
+						<span class="mb-3 mb-md-0 text-body-secondary"></span>
+							2024 Movie-Match</span
+						>
+					</div>
+
+					<ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+						<li class="ms-3">
+							<a
+								class="text-body-secondary"
+								href="https://github.com/arunnats/movie-match"
+								target="_blank"
+							>
+								<svg class="bi" width="24" height="24">
+									<use xlink:href="#github"></use>
+								</svg>
+							</a>
+						</li>
+					</ul>
+				</footer>
+			</div>
+		</div>
+		
+		<script>
+			document.body.classList.add("dark_theme");
+
+			document.getElementById("theme").addEventListener("click", () => {
+				document.body.classList.toggle("light_theme");
+			});
+
+			document
+				.getElementById("searchButton")
+				.addEventListener("click", async function () {
+					const searchQuery = document.getElementById("searchInput").value;
+
+					// If the search bar is empty, do nothing
+					if (!searchQuery.trim()) {
+						return;
+					}
+
+					try {
+						const response = await fetch("/search", {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({ query: searchQuery }),
+						});
+
+						const { searchId } = await response.json();
+
+						window.location.href = `/results?searchId=${searchId}`;
+					} catch (error) {
+						console.error("Error:", error);
+					}
+				});
+		</script>
+	</body>
+</html>

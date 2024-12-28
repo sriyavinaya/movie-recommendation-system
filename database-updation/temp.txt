@@ -1,0 +1,632 @@
+const express = require("express");
+const path = require("path");
+const Fuse = require("fuse.js");
+const { MongoClient } = require("mongodb");
+const config = require("./config.json");
+const session = require("express-session");
+const crypto = require("crypto");
+
+const app = express();
+const port = 3000;
+
+app.use(
+	session({
+		secret: "iamsocoolomgg",
+		resave: false,
+		saveUninitialized: true,
+	})
+);
+
+// Replace bodyParser middleware with express.json()
+app.use(express.json());
+
+const mongoConnectionString = config.mongo_connection_string;
+const dbName = config.mongo_database_name;
+
+const client = new MongoClient(mongoConnectionString, {
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+});
+
+let cachedMovies = [];
+
+const updateCache = async () => {
+	const database = client.db(dbName);
+	const collection = database.collection("movies");
+	cachedMovies = await collection.find().toArray();
+};
+
+const fuseOptions = {
+	keys: ["Title"],
+};
+
+async function initialize() {
+	try {
+		await client.connect();
+		await updateCache();
+		app.listen(port, () => {
+			console.log(`Server is running at http://localhost:${port}`);
+		});
+	} catch (error) {
+		console.error("Error initializing server:", error);
+		process.exit(1);
+	}
+}
+
+initialize();
+
+app.use(express.static(path.join(__dirname, "public")));
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "public", "views"));
+
+app.get("/", (req, res) => {
+	res.render("index.ejs");
+});
+
+app.post("/search", async (req, res) => {
+	try {
+		const { query } = req.body;
+		console.log("Received query:", query);
+
+		const fuse = new Fuse(
+			cachedMovies.filter((movie) => !movie.Genre.includes("Adult")),
+			fuseOptions
+		);
+
+		const searchResults = fuse.search(query).slice(0, 100);
+
+		const result = searchResults
+			.map(({ item }) => ({
+				tconst: item.tconst,
+				title: item.Title,
+				poster: item.Poster,
+				posteralt: item.PosterAlt,
+			}))
+			.filter((movie) => !(movie.poster === "N/A" && movie.posteralt === ""));
+
+		console.log("Search Results:", result);
+
+		const searchId = crypto.randomBytes(8).toString("hex");
+
+		req.session[searchId] = result;
+
+		res.json({ searchId });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
+app.post("/adv-search", async (req, res) => {
+	try {
+		const { genre, language, ott, rating } = req.body.options;
+
+		console.log("Received options:", req.body.options);
+
+		const filteredMovies = await Promise.all(
+			cachedMovies.map(async (movie) => {
+				const movieGenres = movie.Genre.split(", ").map((g) => g.trim());
+				const containsGenres = genre.every((g) => movieGenres.includes(g));
+
+				const containsLanguage = language.includes(movie.Language);
+
+				const containsOTT = ott.some(
+					async (selectedOTT) =>
+						movie.StreamingService &&
+						movie.StreamingService.some(
+							async (service) =>
+								service && service.StreamingService === selectedOTT
+						)
+				);
+
+				const containsRating = rating.includes(movie.Rated);
+
+				const includesMovie =
+					containsGenres &&
+					containsLanguage &&
+					(await containsOTT) &&
+					containsRating;
+
+				return includesMovie ? movie : null;
+			})
+		);
+
+		const result = filteredMovies
+			.filter(Boolean)
+			.map(({ tconst, Title, Poster, PosterAlt }) => ({
+				tconst,
+				title: Title,
+				poster: Poster,
+				posteralt: PosterAlt,
+			}))
+			.filter((movie) => !(movie.poster === "N/A" && movie.posteralt === ""));
+
+		console.log("resutls");
+		console.log("Search Results:", result);
+		console.log("resutls");
+
+		const searchId = crypto.randomBytes(8).toString("hex");
+
+		req.session[searchId] = result;
+
+		res.json({ searchId });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
+app.post("/searchCall", async (req, res) => {
+	try {
+		const { query } = req.body;
+		console.log("Received query:", query);
+
+		const fuse = new Fuse(cachedMovies, fuseOptions);
+
+		const searchResults = fuse.search(query).slice(0, 100);
+
+		const result = searchResults
+			.map(({ item }) => ({
+				tconst: item.tconst,
+				title: item.Title,
+				poster: item.Poster,
+				posteralt: item.PosterAlt,
+			}))
+			.filter((movie) => !(movie.poster === "N/A" && movie.posteralt === ""));
+
+		console.log("Search Results:", result);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
+app.get("/results", (req, res) => {
+	try {
+		const { searchId } = req.query;
+
+		console.log("Received searchId:", searchId);
+
+		const searchResults = req.session[searchId];
+
+		console.log("Retrieved search results from session:", searchResults);
+
+		res.render("results.ejs", { searchResults });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
+app.get("/adv-results", (req, res) => {
+	try {
+		const { searchId } = req.query;
+
+		console.log("Received searchId:", searchId);
+
+		const searchResults = req.session[searchId];
+
+		console.log("Retrieved search results from session:", searchResults);
+
+		res.render("results.ejs", { searchResults });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
+app.get("/advanced-search", (req, res) => {
+	res.render("advanced-search.ejs");
+});
+
+app.get("/recommendations", (req, res) => {
+	res.render("recommendations.ejs");
+});
+
+app.get("/view-info/:tconst", (req, res) => {
+	try {
+		const { tconst } = req.params;
+
+		const movieDetails = findMovieDetailsInLocalCache(tconst);
+
+		res.render("movie-details.ejs", { movieDetails });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
+function findMovieDetailsInLocalCache(tconst) {
+	const cachedMovie = cachedMovies.find((movie) => movie.tconst === tconst);
+
+	return cachedMovie;
+}
+
+
+<!DOCTYPE html>
+
+<html lan="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>movie-watch</title>
+		<link rel="stylesheet" href="/css/result_searchbar.css" />
+		<link rel="stylesheet" href="/css/recommendation.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+			integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+		/>
+	</head>
+	<body>
+		<div class="header">
+			<!-- theme change button-->
+			<div class=".theme_hold">
+				<svg id="theme" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+					<title>weather-night</title>
+					<path
+						d="M17.75,4.09L15.22,6.03L16.13,9.09L13.5,7.28L10.87,9.09L11.78,6.03L9.25,4.09L12.44,4L13.5,1L14.56,4L17.75,4.09M21.25,11L19.61,12.25L20.2,14.23L18.5,13.06L16.8,14.23L17.39,12.25L15.75,11L17.81,10.95L18.5,9L19.19,10.95L21.25,11M18.97,15.95C19.8,15.87 20.69,17.05 20.16,17.8C19.84,18.25 19.5,18.67 19.08,19.07C15.17,23 8.84,23 4.94,19.07C1.03,15.17 1.03,8.83 4.94,4.93C5.34,4.53 5.76,4.17 6.21,3.85C6.96,3.32 8.14,4.21 8.06,5.04C7.79,7.9 8.75,10.87 10.95,13.06C13.14,15.26 16.1,16.22 18.97,15.95M17.33,17.97C14.5,17.81 11.7,16.64 9.53,14.5C7.36,12.31 6.2,9.5 6.04,6.68C3.23,9.82 3.34,14.64 6.35,17.66C9.37,20.67 14.19,20.78 17.33,17.97Z"
+					/>
+				</svg>
+			</div>
+
+			<!-- seach bar -->
+			<div class="search">
+				<div class="icon"><i class="fa fa-search"></i></div>
+				<input type="text" placeholder="Search.." class="bar" />
+				<button class="searchButton">Search</button>
+			</div>
+		</div>
+
+		<!--recommendation button-->
+		<div class="buttonDiv" id="searchButton">
+			<button>Advanced Search</button>
+		</div>
+
+		<div class="main">
+			<div class="container">
+				<div class="select-btn">
+					<span class="btn-text">Genre</span>
+					<span class="arrow-dwn">
+						<i class="fa-solid fa-chevron-down"></i>
+					</span>
+				</div>
+				<ul class="list-items">
+					<li class="item">
+						<span class="checkbox">
+							<i class="fa-solid fa-check check-icon"></i>
+						</span>
+						<span class="item-text">Drama</span>
+					</li>
+					<li class="item">
+						<span class="checkbox">
+							<i class="fa-solid fa-check check-icon"></i>
+						</span>
+						<span class="item-text">Action</span>
+					</li>
+					<li class="item">
+						<span class="checkbox">
+							<i class="fa-solid fa-check check-icon"></i>
+						</span>
+						<span class="item-text">Romance</span>
+					</li>
+					<li class="item">
+						<span class="checkbox">
+							<i class="fa-solid fa-check check-icon"></i>
+						</span>
+						<span class="item-text">Horror</span>
+					</li>
+					<li class="item">
+						<span class="checkbox">
+							<i class="fa-solid fa-check check-icon"></i>
+						</span>
+						<span class="item-text">Sci-Fi</span>
+					</li>
+					<li class="item">
+						<span class="checkbox">
+							<i class="fa-solid fa-check check-icon"></i>
+						</span>
+						<span class="item-text">Comedy</span>
+					</li>
+					<li class="item">
+						<span class="checkbox">
+							<i class="fa-solid fa-check check-icon"></i>
+						</span>
+						<span class="item-text">Crime</span>
+					</li>
+					<li class="item">
+						<span class="checkbox">
+							<i class="fa-solid fa-check check-icon"></i>
+						</span>
+						<span class="item-text">Thriller</span>
+					</li>
+					<li class="item">
+						<span class="checkbox">
+							<i class="fa-solid fa-check check-icon"></i>
+						</span>
+						<span class="item-text">Adventure</span>
+					</li>
+					<li class="item">
+						<span class="checkbox">
+							<i class="fa-solid fa-check check-icon"></i>
+						</span>
+						<span class="item-text">Fantasy</span>
+					</li>
+					<li class="item">
+						<span class="checkbox">
+							<i class="fa-solid fa-check check-icon"></i>
+						</span>
+						<span class="item-text">Animation</span>
+					</li>
+					<li class="item">
+						<span class="checkbox">
+							<i class="fa-solid fa-check check-icon"></i>
+						</span>
+						<span class="item-text">Biography</span>
+					</li>
+				</ul>
+			</div>
+
+			<div class="container">
+				<div class="select-btn2">
+					<span class="btn-text2">OTT</span>
+					<span class="arrow-dwn2">
+						<i class="fa-solid fa-chevron-down"></i>
+					</span>
+				</div>
+				<ul class="list-items2">
+					<li class="item2">
+						<span class="checkbox2"> </span>
+						<span class="item-text2">Netflix</span>
+					</li>
+					<li class="item2">
+						<span class="checkbox2"> </span>
+						<span class="item-text2">Hotstar</span>
+					</li>
+					<li class="item2">
+						<span class="checkbox2"> </span>
+						<span class="item-text2">Amazon Prime Video</span>
+					</li>
+					<li class="item2">
+						<span class="checkbox2"> </span>
+						<span class="item-text2">Jio cinema</span>
+					</li>
+					<li class="item2">
+						<span class="checkbox2"> </span>
+						<span class="item-text2">Youtube</span>
+					</li>
+					<li class="item2">
+						<span class="checkbox2"> </span>
+						<span class="item-text2">AMC Plus Apple TV Channel</span>
+					</li>
+				</ul>
+			</div>
+			<div class="container">
+				<div class="select-btn3">
+					<span class="btn-text3">Language</span>
+					<span class="arrow-dwn3">
+						<i class="fa-solid fa-chevron-down"></i>
+					</span>
+				</div>
+				<ul class="list-items3">
+					<li class="item3">
+						<span class="checkbox3"> </span>
+						<span class="item-text3">English</span>
+					</li>
+					<li class="item3">
+						<span class="checkbox3"> </span>
+						<span class="item-text3">Hindi</span>
+					</li>
+					<li class="item3">
+						<span class="checkbox3"> </span>
+						<span class="item-text3">Malayalam</span>
+					</li>
+					<li class="item3">
+						<span class="checkbox3"> </span>
+						<span class="item-text3">Tamil</span>
+					</li>
+					<li class="item3">
+						<span class="checkbox3"> </span>
+						<span class="item-text3">Telugu</span>
+					</li>
+					<li class="item3">
+						<span class="checkbox3"> </span>
+						<span class="item-text3">Bengali</span>
+					</li>
+					<li class="item3">
+						<span class="checkbox3"> </span>
+						<span class="item-text3">Korean</span>
+					</li>
+					<li class="item3">
+						<span class="checkbox3"> </span>
+						<span class="item-text3">Japanese</span>
+					</li>
+					<li class="item3">
+						<span class="checkbox3"> </span>
+
+						<span class="item-text3">French</span>
+					</li>
+				</ul>
+			</div>
+			<div class="container">
+				<div class="select-btn4">
+					<span class="btn-text4">Ratings</span>
+					<span class="arrow-dwn4">
+						<i class="fa-solid fa-chevron-down"></i>
+					</span>
+				</div>
+				<ul class="list-items4">
+					<li class="item4">
+						<span class="checkbox4"> </span>
+						<span class="item-text4">PG-13</span>
+					</li>
+					<li class="item4">
+						<span class="checkbox4"> </span>
+						<span class="item-text4">16</span>
+					</li>
+					<li class="item4">
+						<span class="checkbox4"> </span>
+						<span class="item-text4">18+</span>
+					</li>
+					<li class="item4">
+						<span class="checkbox4"> </span>
+						<span class="item-text4">ALL</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<script>
+			(async function () {
+				document.body.classList.add("dark_theme");
+
+				document.getElementById("theme").addEventListener("click", () => {
+					document.body.classList.toggle("light_theme");
+				});
+
+				//for first drop down
+				let selectBtn = document.querySelector(".select-btn"),
+					items = document.querySelectorAll(".item");
+
+				selectBtn.addEventListener("click", () => {
+					selectBtn.classList.toggle("open");
+				});
+
+				items.forEach((item) => {
+					item.addEventListener("click", () => {
+						item.classList.toggle("checked");
+
+						let checked = document.querySelectorAll(".checked"),
+							btnText = document.querySelector(".btn-text");
+						if (checked && checked.length > 0) {
+							btnText.innerText = `${checked.length} Selected`;
+						} else {
+							btnText.innerText = "Select Language";
+						}
+					});
+				});
+
+				//second
+				let selectBtn2 = document.querySelector(".select-btn2"),
+					items2 = document.querySelectorAll(".item2");
+
+				selectBtn2.addEventListener("click", () => {
+					selectBtn2.classList.toggle("open");
+				});
+
+				items2.forEach((item) => {
+					item.addEventListener("click", () => {
+						item.classList.toggle("checked2");
+
+						let checked = document.querySelectorAll(".checked2"),
+							btnText = document.querySelector(".btn-text2");
+						if (checked && checked.length > 0) {
+							btnText.innerText = `${checked.length} Selected`;
+						} else {
+							btnText.innerText = "Select Language";
+						}
+					});
+				});
+
+				//third
+				let selectBtn3 = document.querySelector(".select-btn3"),
+					items3 = document.querySelectorAll(".item3");
+
+				selectBtn3.addEventListener("click", () => {
+					selectBtn3.classList.toggle("open");
+				});
+
+				items3.forEach((item) => {
+					item.addEventListener("click", () => {
+						item.classList.toggle("checked3");
+
+						let checked = document.querySelectorAll(".checked3"),
+							btnText = document.querySelector(".btn-text3");
+						if (checked && checked.length > 0) {
+							btnText.innerText = `${checked.length} Selected`;
+						} else {
+							btnText.innerText = "Select Language";
+						}
+					});
+				});
+
+				//fourth
+				let selectBtn4 = document.querySelector(".select-btn4"),
+					items4 = document.querySelectorAll(".item4");
+
+				selectBtn4.addEventListener("click", () => {
+					selectBtn4.classList.toggle("open");
+				});
+
+				items4.forEach((item) => {
+					item.addEventListener("click", () => {
+						item.classList.toggle("checked4");
+
+						let checked = document.querySelectorAll(".checked4"),
+							btnText = document.querySelector(".btn-text4");
+						if (checked && checked.length > 0) {
+							btnText.innerText = `${checked.length} Selected`;
+						} else {
+							btnText.innerText = "Select Language";
+						}
+					});
+				});
+
+				const searchButton = document.getElementById("searchButton");
+				searchButton.addEventListener("click", async () => {
+					// Collect selected options from the dropdowns
+					const selectedGenre = Array.from(
+						document.querySelectorAll(".item.checked")
+					).map((item) => item.textContent.trim());
+					const selectedOTT = Array.from(
+						document.querySelectorAll(".item2.checked2")
+					).map((item) => item.textContent.trim());
+					const selectedLanguage = Array.from(
+						document.querySelectorAll(".item3.checked3")
+					).map((item) => item.textContent.trim());
+					const selectedRating = Array.from(
+						document.querySelectorAll(".item4.checked4")
+					).map((item) => item.textContent.trim());
+
+					// Create a JSON object with the selected options
+					const searchOptions = {
+						genre: selectedGenre,
+						ott: selectedOTT,
+						language: selectedLanguage,
+						rating: selectedRating,
+					};
+
+					// Log or use the searchOptions as needed
+					console.log("Search Options:", searchOptions);
+
+					try {
+						const response = await fetch("/adv-search", {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({ options: searchOptions }),
+						});
+
+						const { searchId } = await response.json();
+
+						window.location.href = `/adv-results?searchId=${searchId}`;
+					} catch (error) {
+						console.error("Error:", error);
+					}
+				});
+			})();
+		</script>
+	</body>
+</html>
